@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useReducer, useState } from 'react';
 import { getProducts } from './services/productsService';
 import CatalogView from './components/CatalogView';
 import CartVIew from './components/CartVIew';
+import { itemsReducer } from './reducer/itemsReducer';
 // const initialCardItems = [
 // {
 // 	product: {},
@@ -11,39 +12,30 @@ import CartVIew from './components/CartVIew';
 // ];
 const initialCardItems = JSON.parse(sessionStorage.getItem('cart')) || [];
 const CartApp = () => {
-	const [cartItems, setCartItems] = useState(initialCardItems);
-
+	const [cartItems, dispatch] = useReducer(itemsReducer, initialCardItems);
+	useEffect(() => {
+		sessionStorage.setItem('cart', JSON.stringify(cartItems));
+	}, [cartItems]);
 	const handleAddProduct = product => {
 		const hasItem = cartItems.find(i => i.product.id === product.id);
 		if (hasItem) {
-			// setCartItems([
-			// 	...cartItems.filter(i => i.product.id !== product.id),
-			// 	{
-			// 		product,
-			// 		quantity: hasItem.quantity + 1,
-			// 	},
-			// ]);
-			setCartItems(
-				cartItems.map(i => {
-					if (i.product.id === product.id) {
-						i.quantity += 1;
-					}
-					return i;
-				})
-			);
+			dispatch({
+				type: 'updateQuantityProductCart',
+				payload: product,
+			});
 		} else {
-			setCartItems([
-				...cartItems,
-				{
-					product,
-					quantity: 1,
-				},
-			]);
+			dispatch({
+				type: 'addProductCart',
+				payload: product,
+			});
 		}
 	};
 
 	const handlerDeleteProductCart = id => {
-		setCartItems([...cartItems.filter(i => i.product.id !== id)]);
+		dispatch({
+			type: 'deleteProductCart',
+			payload: id,
+		});
 	};
 
 	return (

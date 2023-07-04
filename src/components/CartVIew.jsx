@@ -6,7 +6,7 @@ const CartVIew = ({ items, handlerDelete }) => {
 
 	useEffect(() => {
 		setTotal(calculateTotal(items));
-		sessionStorage.setItem('cart', JSON.stringify(items));
+		//sessionStorage.setItem('cart', JSON.stringify(items));
 	}, [items]);
 
 	return (

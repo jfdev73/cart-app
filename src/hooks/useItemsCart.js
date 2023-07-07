@@ -1,4 +1,41 @@
+import { useEffect, useReducer } from "react";
+import { itemsReducer } from "../reducer/itemsReducer";
+
+const initialCardItems = JSON.parse(sessionStorage.getItem('cart')) || [];
+
 export const useItemsCart = () => {
 
-  return
+  const [cartItems, dispatch] = useReducer(itemsReducer, initialCardItems);
+
+  useEffect(() => {
+    sessionStorage.setItem('cart', JSON.stringify(cartItems));
+  }, [cartItems]);
+
+  const handleAddProduct = product => {
+    const hasItem = cartItems.find(i => i.product.id === product.id);
+    if (hasItem) {
+      dispatch({
+        type: 'updateQuantityProductCart',
+        payload: product,
+      });
+    } else {
+      dispatch({
+        type: 'addProductCart',
+        payload: product,
+      });
+    }
+  };
+
+  const handlerDeleteProductCart = id => {
+    dispatch({
+      type: 'deleteProductCart',
+      payload: id,
+    });
+  };
+
+  return {
+    cartItems,
+    handleAddProduct,
+    handlerDeleteProductCart
+  }
 }

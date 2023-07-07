@@ -1,14 +1,20 @@
 import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
 import { calculateTotal } from '../services/productsService';
+import { useNavigate } from 'react-router-dom';
 const CartVIew = ({ items, handlerDelete }) => {
 	const [total, setTotal] = useState(0);
+
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		setTotal(calculateTotal(items));
 		//sessionStorage.setItem('cart', JSON.stringify(items));
 	}, [items]);
 
+	const onCatalog = () => {
+		navigate('/catalog');
+	};
 	return (
 		<>
 			<h3>Carro de compras</h3>
@@ -51,10 +57,14 @@ const CartVIew = ({ items, handlerDelete }) => {
 					</tr>
 				</tfoot>
 			</table>
+			<button className='btn btn-primary' onClick={onCatalog}>
+				Seguir comprando
+			</button>
 		</>
 	);
 };
 CartVIew.propTypes = {
 	items: PropTypes.array.isRequired,
+	handlerDelete: PropTypes.func,
 };
 export default CartVIew;

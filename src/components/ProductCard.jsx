@@ -1,6 +1,11 @@
+import { useNavigate } from 'react-router-dom';
+
 const ProductCard = ({ id, name, description, price, handler }) => {
+	const navigate = useNavigate();
+
 	const addProduct = product => {
 		handler(product);
+		navigate('/cart');
 	};
 	return (
 		<div>
